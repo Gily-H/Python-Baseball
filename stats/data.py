@@ -8,13 +8,25 @@ game_files = glob.glob(os.path.join(os.getcwd(), "games", "*.EVE"))
 # sort the files in place
 game_files.sort()
 
+# list of pandas dataframes
 game_frames = [];
 
 # loop through each game file
 for game_file in game_files:
+    # read a csv file into a pandas dataframe
+    # names=[list of column headers]
     game_frame = pd.read_csv(game_file, names=["type", "multi2", "multi3", "multi4", "multi5", "multi6", "event"])
-    game_frames.append(game_frame)
+    game_frames.append(game_frame) # append the dataframe to a list of dataframes
 
+
+# create a single large dataframe (games) from the list of dataframes (game_frames)
 games = pd.concat(game_frames)
 
+### cleanup data
 
+# select all rows where there is a "??" in the multi5 column
+# replace the "??" input with an empty string ""
+games.loc[games["multi5"] == "??", "multi5"] = ""
+
+# extract the string values in column multi2 that match the regular expression
+identifiers = games["multi2"].str.extract(r'(.LS(\d{4})\d{5})')
