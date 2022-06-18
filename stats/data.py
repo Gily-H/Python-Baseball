@@ -30,3 +30,22 @@ games.loc[games["multi5"] == "??", "multi5"] = ""
 
 # extract the string values in column multi2 that match the regular expression
 identifiers = games["multi2"].str.extract(r'(.LS(\d{4})\d{5})')
+
+# fill empty data (Na/NaN) with the previous valid value
+identifiers = identifiers.fillna(method="ffill")
+
+# rename identifier columns
+identifiers.columns = ["game_id", "year"]
+
+# append the updated identifiers dataframe to the games dataframe
+# axis=1 - concat along the columns
+games = pd.concat([games, identifiers], axis=1, sort=False)
+
+# fill empty spaces (Na/NaN) with a literal whitespace
+games = games.fillna(" ")
+
+# save memory by making the "type" column Categorical
+games.loc[:, "type"] = pd.Categorical(games.loc[:, "type"])
+
+# print the first 5 rows in the dataframe
+print(games.head(5))
