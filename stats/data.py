@@ -45,6 +45,7 @@ games = pd.concat([games, identifiers], axis=1, sort=False)
 games = games.fillna(" ")
 
 # save memory by making the "type" column Categorical
+# passing in : as the condition - selects all rows
 games.loc[:, "type"] = pd.Categorical(games.loc[:, "type"])
 
 # print the first 5 rows in the dataframe
