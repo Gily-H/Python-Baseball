@@ -19,7 +19,16 @@ strike_outs = strike_outs.groupby(["year", "game_id"]).size()
 # assign the newly formed column with given column name
 strike_outs = strike_outs.reset_index(name="strike_outs")
 
+# apply() - apply the given function param to the selected columns
+# convert the values in the year and strikeouts columns from strings to numbers
+strike_outs = strike_outs.loc[:, ["year", "strike_outs"]].apply(pd.to_numeric)
 
+# plot the strikeouts data as a scatter plot
+# change the scatter plots' legend text
+strike_outs.plot(x="year", y="strike_outs", kind="scatter").legend(["Strike Outs"])
 
+# add labels to the scatter plot
+plt.xlabel("Year")
+plt.ylabel("Strike Outs")
 
-print(strike_outs)
+plt.show()
