@@ -13,9 +13,19 @@ print(plays)
 # remove duplicate at-bat data to calculate plate appearances only
 # shift() - shift index by a desired number
 # retain the given list of columns
-plate_appearances = plays.loc[
-    plays["player"].shift() != plays["player"], ["year", "game_id", "inning", "team", "player"]]
+pa = plays.loc[plays["player"].shift() != plays["player"], ["year", "game_id", "inning", "team", "player"]]
 
-plate_appearances = plate_appearances.groupby(["year", "game_id", "team"]).size().reset_index(name="PA")
+# group the data on plate appearances by year, game_id, and team
+# label the newly formed column PA for plate appearance count
+# convert the resulting GroupBy object back into a DataFrame object
+pa = pa.groupby(["year", "game_id", "team"]).size().reset_index(name="PA")
 
-print(plate_appearances)
+# set the index of events to four columns (year, game_id, team, event_type)
+print(events)
+events = events.set_index(["year", "game_id", "team", "event_type"])
+print(events)
+
+events = events.unstack().fillna(0).reset_index()
+
+print(pa)
+print(events)
