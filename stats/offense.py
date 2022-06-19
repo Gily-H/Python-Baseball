@@ -31,23 +31,23 @@ hit_type = hits['event'].replace(replacements, regex=True)
 hits = hits.assign(hit_type=hit_type)
 
 # group the hits data by the inning and type of hit
-# returns a GroupBy object with a new column representing the count for each hit
-hits = hits.groupby(["inning", "hit_type"]).size()
+# groupby() - returns a GroupBy object with a new column representing the count for each hit
+# reset_index() - convert the GroupBy object back into a DataFrame and label the new column as count
+hits = hits.groupby(["inning", "hit_type"]).size().reset_index(name="count")
 
-# convert the GroupBy object back into a dataframe and label the new column as count
-hits = hits.reset_index(name="count")
-
-# convert the hit type to Categorical to save memory - we have small number of categories
-hits.loc[:, "hit_type"] = pd.Categorical(hits.loc[:, "hit_type"])
+# convert the hit type to Categorical to save memory - provide a list of the 4 hit type categories
+hits["hit_type"] = pd.Categorical(hits["hit_type"], ["single", "double", "triple", "hr"])
 
 # sort the data by inning and hit type
-hits = hits.sort_values(by=["inning", "hit_type"])
+hits = hits.sort_values(["inning", "hit_type"])
 
 # reshape hits dataframe for plotting
 hits = hits.pivot(index="inning", columns="hit_type", values="count")
 
 # display the hits data as a stacked bar graph
 hits.plot.bar(stacked=True)
+plt.xlabel("Innings")
+plt.ylabel("Total Hits")
 plt.show()
 
 print(hits)
