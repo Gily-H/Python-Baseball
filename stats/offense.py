@@ -37,4 +37,17 @@ hits = hits.groupby(["inning", "hit_type"]).size()
 # convert the GroupBy object back into a dataframe and label the new column as count
 hits = hits.reset_index(name="count")
 
+# convert the hit type to Categorical to save memory - we have small number of categories
+hits.loc[:, "hit_type"] = pd.Categorical(hits.loc[:, "hit_type"])
+
+# sort the data by inning and hit type
+hits = hits.sort_values(by=["inning", "hit_type"])
+
+# reshape hits dataframe for plotting
+hits = hits.pivot(index="inning", columns="hit_type", values="count")
+
+# display the hits data as a stacked bar graph
+hits.plot.bar(stacked=True)
+plt.show()
+
 print(hits)
