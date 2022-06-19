@@ -26,4 +26,15 @@ replacements = {
 # returns a DataFrame object
 hit_type = hits['event'].replace(replacements, regex=True)
 
-print(hit_type)
+# assign a new column to the DataFrame
+# column names are the keywords - columnName=ColumnData
+hits = hits.assign(hit_type=hit_type)
+
+# group the hits data by the inning and type of hit
+# returns a GroupBy object with a new column representing the count for each hit
+hits = hits.groupby(["inning", "hit_type"]).size()
+
+# convert the GroupBy object back into a dataframe and label the new column as count
+hits = hits.reset_index(name="count")
+
+print(hits)
